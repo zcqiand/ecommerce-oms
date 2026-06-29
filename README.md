@@ -88,6 +88,6 @@ docker compose down
 
   - 电商订单与库存管理全栈项目（需求分析 / 数据库与 API / 前端 / 库存联动 / 审批流 / CI/CD）
   - 代码片段索引：[codex-book](https://github.com/zcqiand/codex-book)
-  - 电子书籍网址：[出版社地址](https://www.amazon.com/dp/B0H3781RB9)
+  - 电子书籍网址：[亚马逊](https://www.amazon.com/dp/B0H3781RB9)
 
 **Issues**：[https://github.com/zcqiand/ecommerce-oms/issues](https://github.com/zcqiand/ecommerce-oms/issues)
