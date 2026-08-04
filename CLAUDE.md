@@ -1,25 +1,37 @@
-# ecommerce-oms — Claude Code 项目级上下文
+# ecommerce-oms — 仓库工作约定（供 Claude Code）
 
-> 本项目对应《xr-knowledge-suite》第 28-35 章「电商订单系统」实战案例。
+本仓为《Codex 从入门到项目实践》第 28-35 章「电商订单系统」的可运行配套工程，是书稿代码块的 **source of truth**。
 
 ## 项目定位
 
 中小企业电商订单与库存管理系统。员工创建订单、管理商品、监控库存、协同供应商。用于演示用 Claude Code 完成一个**生产级、Spring Boot 3.3 + React 18 全栈项目**的完整开发流程。
 
-## 技术栈与版本（严格按以下版本）
+## 铁律
 
-| 类别 | 选型 | 版本 |
-|------|------|------|
-| 后端框架 | Spring Boot | 3.3.x |
-| 后端语言 | Java | 21 LTS |
-| 数据库迁移 | Flyway | 10.x |
-| 数据库 | PostgreSQL | 16 |
-| ORM | Spring Data JPA + Hibernate | 6.x |
-| 前端框架 | React | 18.x |
-| 构建工具 | Vite | 5.x |
-| 前端语言 | TypeScript | 5.x |
-| 容器编排 | Docker Compose | v2 |
-| API 文档 | springdoc-openapi | 2.x |
+- **TDD**：每个模块先写失败测试 → 跑确认失败 → 实现 → 跑确认绿 → commit。
+- **版本钉死**：依赖与 `version-lock.json` 的 `version_lock` 一致；不引入 lock 外的库。
+- **tag 即放行**：全量回归绿后打 `v<MAJOR>.<MINOR>-<NNN>`（NNN=项目号）。
+- **只增不改**：扩充时不动现有模块签名/行为；新模块独立测试，CI 双跑（旧测试 + 新测试都绿）。
+- **mock-friendly**：`npm install && npm test` 必须在无 Key、无 Docker、无网下全绿。
+
+## 技术栈与版本（钉死于 version-lock.json）
+
+- Spring Boot 3.3.x
+- Java 21 LTS
+- PostgreSQL 16
+- Flyway 10.x
+- React 18.x
+- Vite 5.x
+- TypeScript 5.x
+- Docker Compose v2
+- springdoc-openapi 2.x
+
+## 验收
+
+```bash
+docker compose up -d   # 拉起 postgres + backend + frontend
+docker compose down    # 关停
+```
 
 ## 目录结构
 
@@ -27,99 +39,41 @@
 ecommerce-oms/
 ├── docker-compose.yml             ← 三服务编排（postgres:16-alpine + backend + frontend）
 ├── .env.example
-├── CLAUDE.md                     ← 本文件
+├── CLAUDE.md
 ├── backend/
-│   ├── pom.xml                   ← Maven 配置，Spring Boot 3.3.0, Java 21
+│   ├── pom.xml
 │   ├── Dockerfile
 │   ├── src/main/java/com/zcqiand/ecommerce/
-│   │   ├── EcommerceApplication.java
 │   │   ├── controller/
-│   │   │   ├── ProductController.java
-│   │   │   ├── OrderController.java
-│   │   │   ├── InventoryController.java
-│   │   │   ├── SupplierController.java
-│   │   │   └── GlobalExceptionHandler.java
 │   │   ├── service/
-│   │   │   ├── ProductService.java
-│   │   │   ├── OrderService.java
-│   │   │   └── InventoryService.java
 │   │   ├── repository/
-│   │   │   ├── ProductRepository.java
-│   │   │   ├── OrderRepository.java
-│   │   │   └── InventoryRepository.java
 │   │   ├── entity/
-│   │   │   ├── Product.java
-│   │   │   ├── Inventory.java
-│   │   │   ├── Order.java
-│   │   │   ├── OrderItem.java
-│   │   │   ├── Supplier.java
-│   │   │   ├── User.java
-│   │   │   └── OrderStatus.java（enum）
 │   │   ├── dto/
-│   │   │   ├── CreateOrderRequest.java
-│   │   │   └── ApiResponse.java
 │   │   └── exception/
-│   │       ├── BusinessException.java
-│   │       └── ResourceNotFoundException.java
 │   ├── src/main/resources/
 │   │   ├── application.yml
 │   │   └── db/migration/
-│   │       ├── V1__init_schema.sql
-│   │       └── V2__seed_data.sql
-│   └── src/test/java/com/zcqiand/ecommerce/
-│       └── controller/
-│           └── ProductControllerTest.java
+│   └── src/test/java/
 ├── frontend/
 │   ├── package.json
 │   ├── Dockerfile
 │   ├── vite.config.ts
 │   ├── tsconfig.json
-│   ├── src/
-│   │   ├── App.tsx
-│   │   ├── main.tsx
-│   │   ├── api/
-│   │   │   └── client.ts
-│   │   └── pages/
-│   │       ├── ProductList.tsx
-│   │       ├── OrderList.tsx
-│   │       └── OrderCreate.tsx
-│   └── index.html
+│   └── src/
+│       ├── App.tsx
+│       ├── main.tsx
+│       ├── api/
+│       └── pages/
 └── .github/workflows/
-    └── ci.yml                    ← CI/CD 双 job（backend mvn verify + frontend npm run build）
+    └── ci.yml
 ```
 
 ## 编码约定
 
-- **零伪代码**：禁止 `// TODO`、`throw new UnsupportedOperationException()`、`return null;` 占位。
-- **数据库迁移走 Flyway**：禁止用 `ddl-auto: update`，所有 schema 变更必须以新的 Flyway 迁移文件登记。
-- **API 必须有 OpenAPI 注解**：所有 Controller 方法必须有 `@Operation` + `@ApiResponse` 注解。
-- **前后端接口契约同步**：后端改 DTO，前端必须同步改对应 TypeScript 类型。
-- **环境变量配置**：所有敏感信息走 `.env`，禁止硬编码进代码。
-- **使用 jakarta.***：Spring Boot 3.x 使用 jakarta.* 而非 javax.*
-
-## 危险操作
-
-以下操作需要用户二次确认：
-
-- 删除 Flyway 已应用的迁移文件
-- 修改 `application.yml` 中的数据库连接配置
-- `docker compose down -v`（会删除 postgres volume）
-
-## 业务规则
-
-- 订单状态流转：`DRAFT → SUBMITTED → PAID → SHIPPED → COMPLETED / CANCELLED`
-- 金额 < 1000 元：直属经理审批（一级）
-- 金额 ≥ 1000 元：部门经理 + 财务总监两级审批
-- 下单时库存自动锁定，支付成功扣减，支付失败/取消释放
-- 拒绝必须填写理由
-
-## 与 xr-know-003 的关系
-
-| 章节 | 本仓库对应 |
-|------|----------|
-| 第 28 章 项目规划 | 本文件 + `docker-compose.yml` |
-| 第 29-30 章 数据库与 API | `backend/src/main/java/...` + `db/migration/` |
-| 第 31-32 章 前端与 UI | `frontend/src/pages/` |
-| 第 33 章 库存与订单联动 | `backend/service/OrderService.java` + `InventoryService.java` |
-| 第 34 章 审批流 | `backend/entity/Order.java` 状态机 + `OrderService` 审批逻辑 |
-| 第 35 章 CI/CD | `.github/workflows/ci.yml`（backend + frontend 双 job） |
+- 所有业务类型放在 `src/types/`（前端）
+- 所有 HTTP 客户端封装在 `src/api/`（前端）
+- 特性按 `src/features/` 组织（前端）
+- API 必须有 OpenAPI 注解：所有 Controller 方法必须有 `@Operation` + `@ApiResponse` 注解
+- 前后端接口契约同步：后端改 DTO，前端必须同步改对应 TypeScript 类型
+- 环境变量配置：所有敏感信息走 `.env`，禁止硬编码进代码
+- 使用 jakarta.*：Spring Boot 3.x 使用 jakarta.* 而非 javax.*
