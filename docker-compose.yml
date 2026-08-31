@@ -22,9 +22,9 @@ services:
       dockerfile: Dockerfile
     container_name: ecommerce-backend
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ecommerce
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
+      DATABASE_URL: jdbc:postgresql://postgres:5432/ecommerce
+      DATABASE_USER: postgres
+      DATABASE_PASSWORD: postgres
       SPRING_PROFILES_ACTIVE: docker
     ports:
       - "8080:8080"
@@ -32,7 +32,8 @@ services:
       postgres:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8080/actuator/health || exit 1"]
+      test:
+        ["CMD-SHELL", "curl -f http://localhost:8080/actuator/health || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
