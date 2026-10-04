@@ -10,62 +10,19 @@
 
 - **TDD**：每个模块先写失败测试 → 跑确认失败 → 实现 → 跑确认绿 → commit。
 - **版本钉死**：依赖与 `version-lock.json` 的 `version_lock` 一致；不引入 lock 外的库。
-- **tag 即放行**：全量回归绿后打 `v<MAJOR>.<MINOR>-<NNN>`（NNN=项目号）。
+- **tag 即放行**：全量回归绿后打 Release 格式 tag `v<MAJOR>.<MINOR>.<PATCH>-<YYYYMMDD>`（2026-10-04 对齐兄弟仓规约，弃用旧 `v<M.m>-<NNN>` 格式）。
 - **只增不改**：扩充时不动现有模块签名/行为；新模块独立测试，CI 双跑（旧测试 + 新测试都绿）。
 - **mock-friendly**：`npm install && npm test` 必须在无 Key、无 Docker、无网下全绿。
 
-## 技术栈与版本（钉死于 version-lock.json）
+## 技术栈（版本钉死于 `version-lock.json`）
 
-- Spring Boot 3.3.x
-- Java 21 LTS
-- PostgreSQL 16
-- Flyway 10.x
-- React 18.x
-- Vite 5.x
-- TypeScript 5.x
-- Docker Compose v2
-- springdoc-openapi 2.x
+Spring Boot 3.3 / Java 21 / PostgreSQL 16 / Flyway / React 18 / Vite / TypeScript / Docker Compose / springdoc-openapi
 
 ## 验收
 
 ```bash
 docker compose up -d   # 拉起 postgres + backend + frontend
 docker compose down    # 关停
-```
-
-## 目录结构
-
-```
-ecommerce-oms/
-├── docker-compose.yml             ← 三服务编排（postgres:16-alpine + backend + frontend）
-├── .env.example
-├── CLAUDE.md
-├── backend/
-│   ├── pom.xml
-│   ├── Dockerfile
-│   ├── src/main/java/com/zcqiand/ecommerce/
-│   │   ├── controller/
-│   │   ├── service/
-│   │   ├── repository/
-│   │   ├── entity/
-│   │   ├── dto/
-│   │   └── exception/
-│   ├── src/main/resources/
-│   │   ├── application.yml
-│   │   └── db/migration/
-│   └── src/test/java/
-├── frontend/
-│   ├── package.json
-│   ├── Dockerfile
-│   ├── vite.config.ts
-│   ├── tsconfig.json
-│   └── src/
-│       ├── App.tsx
-│       ├── main.tsx
-│       ├── api/
-│       └── pages/
-└── .github/workflows/
-    └── ci.yml
 ```
 
 ## 编码约定
@@ -77,3 +34,9 @@ ecommerce-oms/
 - 前后端接口契约同步：后端改 DTO，前端必须同步改对应 TypeScript 类型
 - 环境变量配置：所有敏感信息走 `.env`，禁止硬编码进代码
 - 使用 jakarta.*：Spring Boot 3.x 使用 jakarta.* 而非 javax.*
+
+## 细则（docs/conventions/，按需引用）
+
+- 目录结构与模块职责 → `docs/conventions/structure.md`
+- Tag 规约：Release 格式，禁止删/覆盖，禁止 `git push --tags`
+  （显式 `push origin <tag>`）→ `docs/conventions/tagging.md`
