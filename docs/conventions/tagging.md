@@ -17,9 +17,9 @@
 > `<YYYYMMDD>` 是 tag 创建日（commit author date 也可，但要同一仓一致）。
 > 不放 commit 数 —— `git describe` 会自动加 `-<N>-g<sha>` 后缀。
 >
-> **历史遗留**：本仓存有一个旧 iteration tag `v1.0-003`（早于本规约）。按兄弟仓
-> 先例应重命名为 Release 格式后显式推送；重命名涉及删 tag + force push，属外发
-> 动作，留待人批执行。**新 tag 一律用 Release 格式。**
+> **历史遗留**：旧 iteration tag `v1.0-003`（lightweight，指向初始化提交 `59bf87d`）
+> 已于 2026-10-04 重命名为 `v0.0.1-20260627` 并补 annotated 注解（人批执行，同
+> ai-tutoring 仓先例）；旧名本地与远端均已删除。**新 tag 一律用 Release 格式。**
 
 ## 推送
 
