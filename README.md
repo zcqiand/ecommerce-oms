@@ -37,17 +37,6 @@ docker compose down
 | Flyway | 10.x |
 | Docker Compose | v2 |
 
-## 配套书籍及章节映射
-
-| 章 | 主题 | 对应源文件 |
-| :--- | :--- | :--- |
-| 第 28 章 | 项目规划与架构设计 | `CLAUDE.md` + `docker-compose.yml` |
-| 第 29-30 章 | 数据库与 API 开发 | `backend/src/main/java/com/zcqiand/ecommerce/` + `db/migration/` |
-| 第 31-32 章 | 前端与 UI 实现 | `frontend/src/pages/` |
-| 第 33 章 | 库存与订单联动 | `backend/service/OrderService.java` + `InventoryService.java` |
-| 第 34 章 | 审批流与多级审核 | `backend/entity/Order.java` + `OrderService` 审批逻辑 |
-| 第 35 章 | 自动化测试与 CI/CD | `backend/src/test/` + `.github/workflows/ci.yml` |
-
 ## 快速链接
 
 - [功能规格文档.md](功能规格文档.md) — 功能名称、描述与验收标准
